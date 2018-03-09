@@ -5,9 +5,11 @@
 import Vue from 'vue';
 import App from './App';
 import VueRouter from 'vue-router';
+import axios from 'axios';
 import seller from './components/seller/seller';
 import goods from './components/goods/goods';
 import ratings from './components/ratings/ratings';
+Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 
 Vue.use(VueRouter);
@@ -23,11 +25,9 @@ const router = new VueRouter({
   routes
 });
 /* eslint-disable no-new */
-let app = new Vue({
+new Vue({
   el: '#app',
   router,
-  render: h => h(App)
-});
-Vue.use({
-  app
-});
+  template: '<App/>',
+  components: { App }
+}).$mount('#app');

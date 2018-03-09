@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-header></v-header>
+    <v-header :seller="seller"></v-header>
     <div class="tab">
       <div class="tab-item">
         <router-link to="/goods">商品</router-link>
@@ -17,8 +17,27 @@
 </template>
 
 <script>
-  import header from './components/header/header.vue';
-  export default {
+import header from './components/header/header.vue';
+const ERR_OK = 0;
+export default {
+  data() {
+    return {
+      seller: {}
+    };
+  },
+  created() {
+    this.$http
+      .get('/api/seller')
+      .then(res => {
+        let sellerdata = res.data;
+        if (sellerdata.errno === ERR_OK) {
+          this.seller = Object.assign({}, this.seller, sellerdata.data);
+        };
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
   components: {
     'v-header': header
   }
@@ -26,21 +45,20 @@
 </script>
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
-  #app .tab{
-    width: 100%;
-    height: 40px;
-    line-height: 40px;
-    display: flex;
-    background-color: red;
-  }
-#app .tab .tab-item{
+#app .tab {
+  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  display: flex;
+  background-color: red;
+}
+#app .tab .tab-item {
   flex: 1;
 }
 </style>

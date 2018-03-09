@@ -28,6 +28,7 @@ module.exports = {
     // 使用分号结尾
     'semi': ['error', 'always'],
     // 缩进为0
-    'indent':0
+    'indent': 0,
+    'space-before-function-paren': 0
   }
 }

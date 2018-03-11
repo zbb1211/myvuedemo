@@ -29,6 +29,9 @@ module.exports = {
     'semi': ['error', 'always'],
     // 缩进为0
     'indent': 0,
-    'space-before-function-paren': 0
+    'space-before-function-paren': 0,
+    'no-trailing-spaces': ["error", { "skipBlankLines": true }],
+    'no-trailing-spaces': ['error', { "ignoreComments": true }],
+    'no-tabs': 0
   }
 }

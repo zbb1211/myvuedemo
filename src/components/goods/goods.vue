@@ -1,12 +1,11 @@
 <template>
     <div id="goods">
-      <div ref="menuWrapper">
-        <div class="menutabs" ref="menutabWrapper">
-        <ul>
-          <li v-for="(good, index) in goods" :key="index" class="classify" :class="{'current': currentIndex === index}" ref="menuList">
+      <div class="menutabs" ref="menuWrapper" >
+        <div ref="menutabWrapper">
+          <div v-for="(good, index) in goods" :key="index" class="classify" ref="menuList" :class="{'current':currentIndex === Number(index)}"
+          @click="selectGoods(index, $event)">
             {{good.name}}
-          </li>
-        </ul>
+          </div>
       </div>
       </div>
       <div class="foods" ref="goodsWrapper">
@@ -72,7 +71,7 @@ export default {
           this.goods = Object.assign({}, this.goodsdata, goodsdata.data);
           this.$nextTick(() => {
             this._initScroll();
-            //this._calculateHeight();
+            this._calculateHeight();
           });
         }
       })
@@ -83,7 +82,8 @@ export default {
   methods: {
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
-        click: true
+        click: true,
+        probeType: 3
       });
       this.goodsScroll = new BScroll(this.$refs.goodsWrapper, {
         click: true,
@@ -105,6 +105,13 @@ export default {
     _scrollTo(index) {
       let el = this.$refs.menuList[index];
       this.menuScroll.scrollToElement(el, 300, 0, -100);
+    },
+    selectGoods(index, event) {
+      if (!event._constructed) {
+        return;
+      }
+      let el = this.$refs.foodsList[index];
+      this.goodsScroll.scrollToElement(el, 300);
     }
   }
 };
@@ -113,7 +120,7 @@ export default {
 <style scoped lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixin';
 
-#goods {
+#goods
   position: absolute;
   width: 100%;
   display: flex;
@@ -121,11 +128,10 @@ export default {
   bottom: 46px;
   overflow: hidden;
 
-  .menutabs {
+  .menutabs
     width: 80px;
     background-color: #f3f5f7;
-
-    .classify {
+    .classify
       width: 56px;
       height: 54px;
       padding: 0 12px;
@@ -134,13 +140,12 @@ export default {
       font-size: 12px;
       line-height: 14px;
       color: rgb(75, 85, 93);
-    }
-  }
-
-  .foods {
+      &.current
+        background-color #ffffff
+        color rgb(240, 20, 20)
+  .foods
     flex: 1;
-
-    .title {
+    .title
       height: 26px;
       line-height: 26px;
       border-left: 2px solid #d9dde1;
@@ -148,59 +153,36 @@ export default {
       padding-left: 13px;
       font-size: 12px;
       color: rgb(147, 153, 159);
-    }
-
-    .detail {
+    .detail
       padding: 18px;
       display: flex;
-      border-bottom: 1px solid rgba(7, 17, 27, 0.1);
-
-      .picture {
+      border-1px(rgba(7, 17, 27, 0.1))
+      .picture
         margin-right: 10px;
-
-        img {
+        img
           border-radius: 2px;
-        }
-      }
-
-      .detail_info {
+      .detail_info
         flex: 1;
-
-        .foods_name {
+        .foods_name
           font-size: 14px;
           line-height: 14px;
           color: rgb(7, 17, 27);
           margin-bottom: 8px;
-        }
-
-        .description, .sells {
+        .description, .sells
           font-size: 10px;
           color: rgb(147, 153, 159);
           line-height: 10px;
           margin-bottom: 8px;
-        }
-
-        .count {
+        .count
           margin-right: 12px;
-        }
-
-        .price {
+        .price
           font-size: 10px;
           color: rgb(147, 153, 159);
           line-height: 24px;
           font-weight: 700;
-
-          .new {
+          .new
             color: rgb(240, 20, 20);
             margin-right: 8px;
-          }
-
-          .old {
+          .old
             text-decoration: line-through;
-          }
-        }
-      }
-    }
-  }
-}
 </style>

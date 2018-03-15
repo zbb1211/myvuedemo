@@ -1,4 +1,5 @@
 <template>
+<div id="goodsWrapper">
     <div id="goods">
       <div class="menutabs" ref="menuWrapper" >
         <div ref="menutabWrapper">
@@ -32,10 +33,13 @@
         </div>
       </div>
     </div>
+    <shopcart></shopcart>
+</div>
 </template>
 
 <script>
 import BScroll from 'better-scroll';
+import shopcart from '../shopcart/shopcart';
 const ERR_OK = 0;
 export default {
   data() {
@@ -113,6 +117,9 @@ export default {
       let el = this.$refs.foodsList[index];
       this.goodsScroll.scrollToElement(el, 300);
     }
+  },
+  components: {
+    'shopcart': shopcart
   }
 };
 </script>

@@ -57,9 +57,16 @@ export default {
       flex 1
       display flex
       .left
-        padding 12px 12px 12px 0
-        border-right 1px solid rgb(43, 51, 59)
+        margin 12px 12px 12px 0
         color rgb(255, 255, 255, 0.4)
         font-weight 700
-      .right  
+      .right
+        border-left 1px solid rgb(43, 51, 59)
+        font-size 16px
+        line-height 24px
+        margin-top 12px
+        margin-bottom 12px
+        font-weight 700
+        padding-left 12px
+        color rgba(255, 255, 255, 0.4)
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div id="goodsWrapper">
+<div id="goodsWrapper" ref="wrapper">
     <div id="goods">
       <div class="menutabs" ref="menuWrapper" >
         <div ref="menutabWrapper">
@@ -10,46 +10,51 @@
       </div>
       </div>
       <div class="foods" ref="goodsWrapper">
-        <div>
         <div class="foods_wrapper" v-for="(good, index) in goods" :key="index" ref="foodsList">
           <h3 class="title">{{good.name}}</h3>
           <div class="detail border-1px" v-for="(food, i) in good.foods" :key="i">
             <div class="picture">
               <img :src="food.image" width="57" height="57">
             </div>
-            <div class="detail_info">
-              <h4 class="foods_name">{{food.name}}</h4>
-              <p class="description">{{food.description}}</p>
-              <p class="sells">
-                <span class="count">月售{{food.sellCount}}份</span>
-                <span class="rating">好评率{{food.rating}}%</span>
-              </p>
-              <p class="price">
-                <span class="new">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
-              </p>
-            </div>
+              <div class="detail_info">
+                <h4 class="foods_name">{{food.name}}</h4>
+                <p class="description">{{food.description}}</p>
+                <p class="sells">
+                  <span class="count">月售{{food.sellCount}}份</span>
+                  <span class="rating">好评率{{food.rating}}%</span>
+                </p>
+                <p class="price">
+                  <span class="new">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+                </p>
+              </div>
+          <cartcontrol :foods = "food" @add="addFood"></cartcontrol>
           </div>
-        </div>
         </div>
       </div>
     </div>
-    <shopcart></shopcart>
+    <shopcart :deliveryPrice="deliveryPrice" :minPrice="minPrice" :selectFoods = "selectFoods" ref="shopcart"></shopcart>
 </div>
 </template>
 
 <script>
 import BScroll from 'better-scroll';
 import shopcart from '../shopcart/shopcart';
+import cartcontrol from '../cartcontrol/cartcontrol';
 const ERR_OK = 0;
 export default {
   data() {
     return {
+      seller: {
+        type: Object
+      },
       goods: [],
       classMap: [],
       menuScroll: null,
       goodsScroll: null,
       scrollY: 0,
-      heightArr: []
+      heightArr: [],
+      deliveryPrice: 0,
+      minPrice: 0
     };
   },
   computed: {
@@ -63,6 +68,19 @@ export default {
         };
       };
       return 0;
+    },
+    selectFoods() {
+      if (this.goods.length > 0) {
+        let foods = [];
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food);
+              }
+          });
+        });
+        return foods;
+      }
     }
   },
   created() {
@@ -72,10 +90,11 @@ export default {
       .then(res => {
         let goodsdata = res.data;
         if (goodsdata.errno === ERR_OK) {
-          this.goods = Object.assign({}, this.goodsdata, goodsdata.data);
+          this.goods = goodsdata.data;
           this.$nextTick(() => {
             this._initScroll();
             this._calculateHeight();
+            this.getPrice();
           });
         }
       })
@@ -116,10 +135,24 @@ export default {
       }
       let el = this.$refs.foodsList[index];
       this.goodsScroll.scrollToElement(el, 300);
+    },
+    getPrice() {
+      let el = this.$refs.wrapper;
+      this.deliveryPrice = parseFloat(el.getAttribute('delivery-price'));
+      this.minPrice = parseFloat(el.getAttribute('min-price'));
+    },
+    addFood(el) {
+      this.$nextTick(() => {
+        this._drop(el);
+      });
+    },
+    _drop(el) {
+      this.$refs.shopcart.drop(el);
     }
   },
   components: {
-    'shopcart': shopcart
+    'shopcart': shopcart,
+    'cartcontrol': cartcontrol
   }
 };
 </script>
@@ -152,18 +185,20 @@ export default {
         color rgb(240, 20, 20)
   .foods
     flex: 1;
-    .title
-      height: 26px;
-      line-height: 26px;
-      border-left: 2px solid #d9dde1;
-      background-color: #f3f5f7;
-      padding-left: 13px;
-      font-size: 12px;
-      color: rgb(147, 153, 159);
-    .detail
-      padding: 18px;
-      display: flex;
-      border-1px(rgba(7, 17, 27, 0.1))
+    .foods_wrapper
+      .title
+        height: 26px;
+        line-height: 26px;
+        border-left: 2px solid #d9dde1;
+        background-color: #f3f5f7;
+        padding-left: 13px;
+        font-size: 12px;
+        color: rgb(147, 153, 159);
+      .detail
+        padding: 18px;
+        display: flex;
+        position relative
+        border-1px(rgba(7, 17, 27, 0.1))
       .picture
         margin-right: 10px;
         img

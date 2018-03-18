@@ -12,9 +12,7 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-     <keep-alive>
-      <router-view :seller="seller"></router-view>
-    </keep-alive>
+    <router-view :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></router-view>
   </div>
 </template>
 
@@ -24,7 +22,9 @@ const ERR_OK = 0;
 export default {
   data() {
     return {
-      seller: {}
+      seller: {
+        type: Object
+      }
     };
   },
   created() {

@@ -32,6 +32,7 @@ module.exports = {
     'space-before-function-paren': 0,
     'no-trailing-spaces': ["error", { "skipBlankLines": true }],
     'no-trailing-spaces': ['error', { "ignoreComments": true }],
-    'no-tabs': 0
+    'no-tabs': 0,
+    'no-side-effects-in-computed-properties': 'on'
   }
 }

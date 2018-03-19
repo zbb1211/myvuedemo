@@ -16,9 +16,8 @@
                 <p class="price">
                   <span class="new">￥{{selectedFood.price}}</span><span class="old" v-show="selectedFood.oldPrice">￥{{selectedFood.oldPrice}}</span>
                 </p>
-            </div>
-            <div class="cartcontrolWrapper">
                 <cartcontrol :foods = "selectedFood" @add="addFood"></cartcontrol>
+               <div @click.stop.prevent="addFirst" class="add-to-cart" v-show="!selectedFood.count || selectedFood.count===0" >加入购物车</div>
             </div>
       </div>
   </div>
@@ -27,6 +26,7 @@
 
 <script type="text/ecmascript-6">
 import cartcontrol from '../cartcontrol/cartcontrol';
+import Vue from 'vue';
 export default {
     props: {
         selectedFood: {
@@ -46,7 +46,15 @@ export default {
             this.showFlag = false;
         },
         addFood(el) {
-            console.log('add');
+          this.$emit('add', el);
+        },
+        addFirst(event) {
+          // if (!event._constructed) {
+          //   return;
+          // }
+          console.log('add');
+          this.$emit('add', event.target);
+          Vue.set(this.selectedFood, 'count', 1);
         }
     },
     components: {
@@ -66,9 +74,9 @@ export default {
     background-color #fff
     transform translate3d(0, 0, 0)
     &.move-enter-active, &.move-leave-active
-      transition: all 0.2s linear
+      transition all 0.2s linear
     &.move-enter, &.move-leave-active
-      transform: translate3d(100%, 0, 0)
+      transform translate3d(100%, 0, 0)
     .img
         position relative
         width 100%
@@ -77,7 +85,7 @@ export default {
         height 0
         padding-top 100%
         .back
-            padding 6px;
+            padding 6px
             position absolute
             left 0
             top 0
@@ -90,29 +98,46 @@ export default {
             top 0
             left 0
             width 100%
+            height 100%
     .detail_info
+        position relative
+        padding 18px
         .foods_name
-          font-size: 14px;
-          line-height: 14px;
-          color: rgb(7, 17, 27);
-          margin-bottom: 8px;
+          font-size 14px
+          line-height 14px
+          color rgb(7, 17, 27)
+          margin-bottom 8px;
         .description, .sells
-          font-size: 10px;
-          color: rgb(147, 153, 159);
-          line-height: 10px;
-          margin-bottom: 8px;
+          font-size 10px
+          color rgb(147, 153, 159)
+          line-height 10px
+          margin-bottom 18px
         .count
-          margin-right: 12px;
+          margin-right 12px
         .price
-          font-size: 10px;
-          color: rgb(147, 153, 159);
-          line-height: 24px;
-          font-weight: 700;
+          font-size 10px
+          color rgb(147, 153, 159)
+          line-height 24px
+          font-weight 700
           .new
-            color: rgb(240, 20, 20);
-            margin-right: 8px;
+            color rgb(240, 20, 20)
+            margin-right 8px
           .old
-            text-decoration: line-through;
-    .cartcontrolWrapper
-        position absolute
+            color rgb(143, 153, 159)
+            text-decoration line-through
+    .cartControl
+      position absolute
+      right 18px
+      bottom 18px
+    .add-to-cart
+      position absolute
+      right 18px
+      bottom 25px
+      height 11px
+      border-radius 12px
+      background-color rgb(0, 160, 220)
+      color #fff
+      padding 7px 12px 4px
+      text-align center
+      font-size 10px
 </style>

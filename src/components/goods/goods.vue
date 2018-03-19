@@ -12,7 +12,7 @@
       <div class="foods" ref="goodsWrapper">
         <div class="foods_wrapper" v-for="(good, index) in goods" :key="index" ref="foodsList">
           <h3 class="title">{{good.name}}</h3>
-          <div class="detail border-1px" v-for="(food, i) in good.foods" :key="i">
+          <div class="detail border-1px" v-for="(food, i) in good.foods" :key="i"  @click="selectFood(food,$event)">
             <div class="picture">
               <img :src="food.image" width="57" height="57">
             </div>
@@ -27,12 +27,13 @@
                   <span class="new">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </p>
               </div>
-          <cartcontrol :foods = "food" @add="addFood"></cartcontrol>
+            <cartcontrol :foods = "food" @add="addFood"></cartcontrol>
           </div>
         </div>
       </div>
     </div>
     <shopcart :deliveryPrice="deliveryPrice" :minPrice="minPrice" :selectFoods = "selectFoods" ref="shopcart"></shopcart>
+    <food :selectedFood = "selectedFood" ref="food"></food>
 </div>
 </template>
 
@@ -40,6 +41,7 @@
 import BScroll from 'better-scroll';
 import shopcart from '../shopcart/shopcart';
 import cartcontrol from '../cartcontrol/cartcontrol';
+import food from '../food/food';
 const ERR_OK = 0;
 export default {
   data() {
@@ -54,7 +56,8 @@ export default {
       scrollY: 0,
       heightArr: [],
       deliveryPrice: 0,
-      minPrice: 0
+      minPrice: 0,
+      selectedFood: {}
     };
   },
   computed: {
@@ -148,11 +151,19 @@ export default {
     },
     _drop(el) {
       this.$refs.shopcart.drop(el);
+    },
+    selectFood(good, event) {
+      if (!event._constructed) {
+        return;
+      };
+      this.selectedFood = good;
+      this.$refs.food.show();
     }
   },
   components: {
     'shopcart': shopcart,
-    'cartcontrol': cartcontrol
+    'cartcontrol': cartcontrol,
+    'food': food
   }
 };
 </script>

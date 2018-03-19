@@ -33,6 +33,6 @@ module.exports = {
     'no-trailing-spaces': ["error", { "skipBlankLines": true }],
     'no-trailing-spaces': ['error', { "ignoreComments": true }],
     'no-tabs': 0,
-    'no-side-effects-in-computed-properties': 'on'
+    'no-side-effects-in-computed-properties': 'off'
   }
 }

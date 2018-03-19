@@ -23,7 +23,7 @@
     </div>
   </div>
   <transition name="fold">
-    <div class="foodsLists">
+    <div class="foodsLists" v-show="listShow">
       <div class="title border-1px">
         <span class="left">购物车</span><span class="right" @click="empty">清空</span>
       </div>
@@ -44,9 +44,9 @@
 </template>
 
 <script>
-/* eslint-disable */
 import cartcontrol from '../cartcontrol/cartcontrol';
 import BScroll from 'better-scroll';
+import Vue from 'vue';
 export default {
   props: {
     deliveryPrice: {
@@ -107,21 +107,22 @@ export default {
     },
     listShow() {
       if (!this.totalCount) {
-        this.fold = true;
+        Vue.set(this, 'fold', true);
         return false;
       };
       let show = !this.fold;
       if (show) {
         this.$nextTick(() => {
           if (!this.scroll) {
-            this.scroll = new BScroll(this.$refs.listContent, {
+            let contentScroll = new BScroll(this.$refs.listContent, {
               click: true
             });
+            Vue.set(this, 'scroll', contentScroll);
           } else {
             this.scroll.refresh();
-          }
+          };
         });
-      }
+      };
       return show;
     }
   },

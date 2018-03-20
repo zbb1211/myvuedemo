@@ -30,7 +30,7 @@
             <split></split>
             <div class="ratings">
                 <h3 class="title">商品评价</h3>
-                <ratingcontent :ratings="selectedFood.ratings" :desc="desc" :select-type="selectType" @select="selectContent"></ratingcontent>
+                <ratingcontent :ratings="selectedFood.ratings" :flag="flag" :desc="desc" :select-type="selectType" @select="selectContent" @toggle="toggleSelect"></ratingcontent>
             </div>
       </div>
   </div>
@@ -61,7 +61,8 @@ export default {
                 positive: '推荐',
                 negative: '吐槽'
             },
-            selectType: ALL
+            selectType: ALL,
+            flag: true
         };
     },
     created() {
@@ -105,6 +106,9 @@ export default {
             this.$nextTick(() => {
                 this.scroll.refresh();
             });
+        },
+        toggleSelect(checkflag) {
+          this.flag = checkflag;
         }
     },
     components: {

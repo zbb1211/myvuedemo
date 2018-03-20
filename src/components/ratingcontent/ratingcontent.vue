@@ -1,19 +1,19 @@
 <template>
   <div class="ratingcontent border-1px">
       <div class="buttons border-1px">
-        <button class="all" :class="{'active':changeSelectType===2}" @click="selectContent(2,$event)">{{desc.all}} 30</button>
-        <button class="positive" :class="{'active':changeSelectType===0}" @click="selectContent(0,$event)">{{desc.positive}} 20</button>
-        <button class="negative" :class="{'active':changeSelectType===1}" @click="selectContent(1,$event)">{{desc.negative}} 10</button>
+        <button class="all" :class="{'active':changeSelectType===2}" @click="selectContent(2,$event)">{{desc.all}} {{ratings.length}}</button>
+        <button class="positive" :class="{'active':changeSelectType===0}" @click="selectContent(0,$event)">{{desc.positive}} {{positiveArr.length}}</button>
+        <button class="negative" :class="{'active':changeSelectType===1}" @click="selectContent(1,$event)">{{desc.negative}} {{negativeArr.length}}</button>
       </div>
-      <div class="checkers">
+      <div class="checkers" :class="{'active':toggleSelectContent}" @click="toggleContent(toggleSelectContent,$event)">
         <i class="icon-check_circle"></i><span class="text">只查看有内容的评价</span>
       </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-// const POSITIVE = 0;
-// const NEGATIVE = 1;
+const POSITIVE = 0;
+const NEGATIVE = 1;
 const ALL = 2;
 export default {
     props: {
@@ -45,6 +45,19 @@ export default {
     computed: {
         changeSelectType() {
             return this.selectType;
+        },
+        toggleSelectContent() {
+            return this.flag;
+        },
+        positiveArr() {
+          return this.ratings.filter((type) => {
+            return type.rateType === POSITIVE;
+          });
+        },
+        negativeArr() {
+          return this.ratings.filter((type) => {
+            return type.rateType === NEGATIVE;
+          });
         }
     },
     methods: {
@@ -53,6 +66,12 @@ export default {
             //     return;
             // }
             this.$emit('select', type);
+        },
+        toggleContent(flag, event) {
+          // if (!event._constructed) {
+          //     return;
+          // }
+          this.$emit('toggle', !this.toggleSelectContent);
         }
     }
 };
@@ -91,6 +110,9 @@ export default {
                 background-color rgb(77, 85, 93)
     .checkers
         padding 12px 0 12px 18px
+        &.active
+            .icon-check_circle
+                color #00c850
         .icon-check_circle
             color rgb(147, 153, 159)
             font-size 24px

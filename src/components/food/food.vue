@@ -31,6 +31,19 @@
             <div class="ratings">
                 <h3 class="title">商品评价</h3>
                 <ratingcontent :ratings="selectedFood.ratings" :flag="flag" :desc="desc" :select-type="selectType" @select="selectContent" @toggle="toggleSelect"></ratingcontent>
+                <div class="ratingWrapper">
+                    <div  v-show="needShow(item.rateType,item.text)" v-for="(item, index) in selectedFood.ratings" :key="index" class="ratingInfo border-1px">
+                        <div class="title_user">
+                            <div class="time">{{item.rateTime}}</div>
+                            <div class="user">
+                                <span class="username">{{item.username}}</span><img :src="item.avatar" width="12" height="12">
+                            </div>
+                        </div>
+                        <div class="text">
+                            <span class="icon" :class="{'icon-thumb_down':item.rateType === 1,'icon-thumb_up':item.rateType === 0}"></span><span class="contenttext">{{item.text}}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
       </div>
   </div>
@@ -81,6 +94,7 @@ export default {
     methods: {
         show() {
             this.showFlag = true;
+            this.flag = true;
             this.$nextTick(() => {
                 this.scroll = new Bscroll(this.$refs.food, {
                     click: true
@@ -109,6 +123,16 @@ export default {
         },
         toggleSelect(checkflag) {
           this.flag = checkflag;
+        },
+        needShow(type, text) {
+            if (this.flag && !text) {
+                return false;
+            };
+            if (this.selectType === ALL) {
+                return true;
+            } else {
+                return type === this.selectType;
+            }
         }
     },
     components: {
@@ -226,4 +250,41 @@ export default {
         font-size 14px
         color rgb(7, 17, 27)
         margin-bottom 6px
+    .ratingWrapper
+        padding 0 18px
+        .ratingInfo
+            padding 16px 0
+            border-1px(rgba(7, 17, 27, 0.1))
+            .title_user
+                margin-bottom 6px
+                display flex
+                .time, .user
+                    flex 1
+                .time
+                    color rgb(147, 153, 159)
+                    font-size 10px
+                    display table-cell
+                    vertical-align middle
+                .user
+                    text-align right
+                    .username
+                        display inline-block
+                        color rgb(147, 153, 159)
+                        font-size 10px
+                    img
+                        vertical-align middle
+                        border-radius 6px
+                        margin-left 6px
+        .text
+            .icon
+                font-size 12px
+                &.icon-thumb_down
+                    color rgb(147, 153, 159)
+                &.icon-thumb_up
+                    color rgb(0, 160, 220)
+            .contenttext
+                font-size 12px
+                color rgb(7, 17, 27)
+                line-height 16px
+                margin-left 4px
 </style>

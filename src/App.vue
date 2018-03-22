@@ -12,7 +12,9 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
+    <keep-alive>
     <router-view :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 

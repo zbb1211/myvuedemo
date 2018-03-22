@@ -1,5 +1,5 @@
 <template>
-<div ref="ratings">
+<div ref="ratings" class="ratingWrapper">
 <div id="ratings">
   <div class="services">
     <div class="services_left">
@@ -25,9 +25,9 @@
     </div>
   </div>
   <split></split>
-  <ratingcontent :ratings="ratings" :flag="flag"></ratingcontent>
+  <ratingcontent :ratings="ratings" :flag="flag" :selectType="selectType" @select="selectContent" @toggle="toggleSelect"></ratingcontent>
   <div class="ratingInfo">
-    <div v-for="(item,index) in ratings" :key="index" class="infowrapper border-1px">
+    <div v-for="(item,index) in ratings" :key="index" class="infowrapper border-1px" v-show="needShow(item.rateType,item.text)">
       <div class="picture">
         <img :src="item.avatar" width="28">
       </div>
@@ -38,11 +38,11 @@
         </div>
         <div class="deliverytext">
           <star :size="24" :score="ratings.score"></star>
-          <span class="deliverytime">{{item.deliveryTime}}分钟送达</span>
+          <span class="deliverytime" v-show="item.deliveryTime">{{item.deliveryTime}}分钟送达</span>
         </div>
         <div class="infotext">{{item.text}}</div>
         <div class="recommends">
-          <i class="icon-thumb_up"></i>
+          <i class="icon-thumb_up" v-show="item.recommend && item.recommend.length>0 "></i>
           <span class="recomenttext" v-for="(text,index) in item.recommend" :key="index" >{{text}}</span>
         </div>
       </div>
@@ -58,6 +58,7 @@ import split from '../split/split';
 import ratingcontent from '../ratingcontent/ratingcontent';
 import Bscroll from 'better-scroll';
 const ERR_OK = 0;
+const ALL = 2;
 export default {
   props: {
     seller: {
@@ -66,8 +67,9 @@ export default {
   },
   data() {
     return {
-      flag: false,
-      ratings: []
+      flag: true,
+      ratings: [],
+      selectType: ALL
     };
   },
   created() {
@@ -88,6 +90,28 @@ export default {
         });
     });
   },
+  methods: {
+     selectContent(type) {
+          // console.log(this.selectType);
+          this.selectType = type;
+          this.$nextTick(() => {
+              this.scroll.refresh();
+          });
+      },
+      toggleSelect(checkflag) {
+        this.flag = checkflag;
+      },
+      needShow(type, text) {
+          if (this.flag && !text) {
+              return false;
+          };
+          if (this.selectType === ALL) {
+              return true;
+          } else {
+              return type === this.selectType;
+          }
+      }
+  },
   components: {
     star,
     split,
@@ -99,7 +123,13 @@ export default {
 <style scoped lang="stylus">
 @import '../../common/stylus/icon';
 @import '../../common/stylus/mixin';
-#ratings
+.ratingWrapper
+  position absolute
+  width 100%
+  top 174px
+  bottom 0
+  background-color #fff
+  overflow hidden
   .services
     display flex
     padding 18px 24px 18px 0

@@ -59,6 +59,8 @@ export default {
     line-height 40px
     display flex
     border-1px(rgba(7, 17, 27, 0.1))
+    z-index 11
+    background-color #fff
     .tab-item
       flex 1
       text-align center

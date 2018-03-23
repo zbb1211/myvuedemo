@@ -1,5 +1,6 @@
 <template>
-<div id="seller">
+<div id="seller" ref="seller">
+<div>
   <div class="overview border-1px">
     <div class="sellername">{{seller.name}}</div>
     <div class="sales">
@@ -38,12 +39,27 @@
     </div>
   </div>
   <split></split>
+  <div class="sellerpics border-1px">
+    <h3 class="title">商家实景</h3>
+    <div class="pics" ref="picsWrapper">
+      <ul class="items" ref="picsList">
+        <li v-for="(item,index) in seller.pics" :key="index" class="item"><img :src="item" width="120" height="90"></li>
+      </ul>
+    </div>
+  </div>
+  <split></split>
+  <div class="sellerinfo">
+    <h3 class="title border-1px">商家信息</h3>
+    <div class="infos border-1px" v-for="(item,index) in seller.infos" :key="index">{{item}}</div>
+  </div>
+</div>
 </div>
 </template>
 
 <script>
 import star from '../star/star';
 import split from '../split/split';
+import BScroll from 'better-scroll';
 export default {
   props: {
     seller: {
@@ -52,6 +68,49 @@ export default {
   },
   created() {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+  },
+  watch: {
+    'seller'() {
+      this.$nextTick(() => {
+        this._initScroll();
+        this._initPics();
+      });
+    }
+  },
+   mounted() {
+    this.$nextTick(() => {
+      this._initScroll();
+      this._initPics();
+    });
+  },
+  methods: {
+     _initScroll() {
+      if (!this.scroll) {
+        this.scroll = new BScroll(this.$refs.seller, {
+          click: true
+        });
+      } else {
+        this.scroll.refresh();
+      }
+     },
+     _initPics() {
+       if (this.seller.pics) {
+          let w = 120;
+          let margin = 6;
+          let ulWidth = (w + margin) * this.seller.pics.length - margin;
+          this.$refs.picsList.style.width = ulWidth + 'px';
+          this.$nextTick(() => {
+            if (!this.picScroll) {
+              this.picScroll = new BScroll(this.$refs.picsWrapper, {
+                scrollX: true,
+                eventPassthrough: 'vertical'
+              });
+            } else {
+              this.picScroll.refresh();
+            }
+          });
+       }
+     }
   },
   components: {
     star,
@@ -155,17 +214,48 @@ export default {
         background-size: 16px 16px
         background-repeat: no-repeat
         &.decrease
-          bg-image('decrease_4')
+          bg-image('images/decrease_4')
         &.discount
-          bg-image('discount_4')
+          bg-image('images/discount_4')
         &.guarantee
-          bg-image('guarantee_4')
+          bg-image('images/guarantee_4')
         &.invoice
-          bg-image('invoice_4')
+          bg-image('images/invoice_4')
         &.special
-          bg-image('special_4')
+          bg-image('images/special_4')
       .supporttext
         font-size 12px
         line-height 16px
         color rgb(7, 17, 27)
+  .sellerpics
+    padding 18px 0 18px 18px
+    .title
+      font-size 12px
+      color rgb(7, 17, 27)
+      margin-bottom 12px
+    .pics
+      height 90px
+      overflow hidden
+      .items
+        .item
+          float left
+          margin-right 6px
+          &:last-child
+            margin-right 0
+  .sellerinfo
+    padding 18px 18px 0
+    color rgb(7, 17, 27)
+    .title
+      padding-bottom 12px
+      font-weight 200
+      border-1px(rgba(7, 17, 27, 0.1))
+    .infos
+      padding 16px 12px
+      border-1px(rgba(7, 17, 27, 0.1))
+      font-size 12px
+      line-height 16px
+      font-weight 200
+      color rgb(7, 17, 27)
+      &:last-child
+        border-none()
 </style>
